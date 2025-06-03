@@ -900,6 +900,51 @@
             .nav-links a.active::after {
                 width: 100%;
             }
+        /* Perbaikan untuk masalah Android */
+        .cart-footer {
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+
+        .checkout-btn {
+            position: relative;
+            z-index: 110;
+        }
+
+        .cart-items {
+            padding-bottom: 120px; /* Ruang untuk footer */
+        }
+
+        /* Perbaikan untuk touch events di Android */
+        button, .option-card, .cart-icon, .whatsapp-btn {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .quantity-btn, .remove-item {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* Perbaikan overflow untuk mobile */
+        @media (max-width: 768px) {
+            .cart-panel {
+                max-width: 100vw;
+            }
+
+            body {
+                overflow-x: hidden;
+                touch-action: pan-y;
+            }
+
+            .cart-items {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1509,6 +1554,74 @@
             document.querySelector('section').classList.add('active');
             document.querySelector('.nav-links a[href="#home"]').classList.add('active');
         });
+        // Perbaikan untuk masalah Android
+        function fixAndroidViewport() {
+            // Deteksi perangkat Android
+            const isAndroid = /Android/i.test(navigator.userAgent);
+
+            if (isAndroid) {
+                // Tambahkan class khusus untuk Android
+                document.body.classList.add('android-device');
+
+                // Perbaikan untuk viewport height
+                function setVH() {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                }
+
+                setVH();
+                window.addEventListener('resize', setVH);
+
+                // Perbaikan untuk keyboard mobile
+                const inputs = document.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', () => {
+                        document.body.classList.add('keyboard-open');
+                    });
+
+                    input.addEventListener('blur', () => {
+                        document.body.classList.remove('keyboard-open');
+                    });
+                });
+            }
+        }
+
+        // Event listeners yang lebih kompatibel untuk mobile
+        function setupMobileEvents() {
+            // Gunakan pointer events untuk kompatibilitas yang lebih baik
+            cartIcon.addEventListener('pointerdown', openCart);
+            closeCart.addEventListener('pointerdown', closeCartPanel);
+            overlay.addEventListener('pointerdown', closeCartPanel);
+
+            // Tambahkan touch events sebagai fallback
+            cartIcon.addEventListener('touchstart', openCart);
+            closeCart.addEventListener('touchstart', closeCartPanel);
+            overlay.addEventListener('touchstart', closeCartPanel);
+
+            // Setup events untuk tombol di keranjang
+            checkoutBtn.addEventListener('pointerdown', openCheckoutModal);
+            checkoutBtn.addEventListener('touchstart', openCheckoutModal);
+
+            // Setup events untuk tombol di modal
+            closeModal.addEventListener('pointerdown', closeCheckoutModal);
+            closeModal.addEventListener('touchstart', closeCheckoutModal);
+            cancelOrder.addEventListener('pointerdown', closeCheckoutModal);
+            cancelOrder.addEventListener('touchstart', closeCheckoutModal);
+            confirmOrder.addEventListener('pointerdown', processOrder);
+            confirmOrder.addEventListener('touchstart', processOrder);
+
+            // Setup events untuk opsi pengiriman
+            pickupOption.addEventListener('pointerdown', () => setShippingMethod('pickup'));
+            pickupOption.addEventListener('touchstart', () => setShippingMethod('pickup'));
+            deliveryOption.addEventListener('pointerdown', () => setShippingMethod('delivery'));
+            deliveryOption.addEventListener('touchstart', () => setShippingMethod('delivery'));
+        }
+
+        // Initialize
+        renderMenu();
+        updateCart();
+        fixAndroidViewport();
+        setupMobileEvents();
     </script>
 </body>
 </html>
