@@ -1,5 +1,5 @@
 module.exports = {
-    siteUrl: 'https://domain-anda.com',
+    siteUrl: 'https://nasgorburina.vercel.app',
     generateRobotsTxt: true,
     sitemapSize: 7000
 }
