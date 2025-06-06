@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /cart
-Disallow: /checkout
-Disallow: /admin
-Disallow: /private
-
-Sitemap: https://warungnasgorburina.com/sitemap.xml
-Sitemap: https://warungnasgorburina.com/sitemap-image.xml
