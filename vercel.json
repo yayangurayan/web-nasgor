@@ -1,11 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/sitemap.xml",
-      "dest": "/sitemap.xml",
-      "headers": {
-        "Content-Type": "application/xml"
-      }
+      "source": "/((?!api|.*\\..*|_next).*)",
+      "destination": "/index.html"
     }
   ]
 }
