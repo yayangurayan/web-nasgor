@@ -1,11 +1,11 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
+import { MotionPlugin } from '@vueuse/motion'
+import './assets/css/style.css'
 import App from './App.vue'
-import router from './data/menuItem'
 
 const app = createApp(App)
 
-app.use(router)
+// Use Plugins
+app.use(MotionPlugin)
 
 app.mount('#app')

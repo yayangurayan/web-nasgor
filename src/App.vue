@@ -1,85 +1,66 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted } from 'vue';
+import { useCart } from '@/composables/useCart';
+
+// Components
+import Navbar from '@/components/layout/Navbar.vue';
+import Footer from '@/components/layout/Footer.vue';
+import HeroSection from '@/components/home/HeroSection.vue';
+import MenuSection from '@/components/home/MenuSection.vue';
+import AboutSection from '@/components/home/AboutSection.vue';
+import CartSidebar from '@/components/cart/CartSidebar.vue';
+import CheckoutModal from '@/components/cart/CheckoutModal.vue';
+
+const { initializeCart } = useCart();
+const isCheckoutOpen = ref(false);
+
+// Initialize
+onMounted(() => {
+  initializeCart();
+});
+
+const openCheckout = () => {
+  isCheckoutOpen.value = true;
+};
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="antialiased text-dark bg-white">
+    <Navbar />
+    
+    <main>
+      <HeroSection />
+      <MenuSection />
+      <AboutSection />
+    </main>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <Footer />
+    
+    <!-- Floating Components -->
+    <CartSidebar @checkout="openCheckout" />
+    <CheckoutModal 
+      :is-open="isCheckoutOpen" 
+      @close="isCheckoutOpen = false" 
+    />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <!-- WhatsApp Floating Button -->
+    <a 
+      href="https://wa.me/6285789340632" 
+      target="_blank"
+      class="fixed bottom-6 right-6 z-40 bg-[#25D366] text-white w-14 h-14 rounded-full shadow-lg shadow-green-500/40 flex items-center justify-center text-3xl hover:-translate-y-1 hover:shadow-xl transition-all duration-300 animate-pulse-slow"
+    >
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style>
+/* Global Animation Utilities if needed */
+.animate-pulse-slow {
+  animation: pulse 3s infinite;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); transform: scale(1.05); }
 }
 </style>
